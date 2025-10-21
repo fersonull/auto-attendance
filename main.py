@@ -3,8 +3,8 @@ from app.models.AttendanceBot import AttendanceBot
 def main():
     print("Starting Attendance Bot...")
 
-    email = "asdas@gmail.com"
-    password = "bagongpassword"
+    email = "youremail@sample.bot"
+    password = "yourpassword"
 
     bot = AttendanceBot(email, password)
 
