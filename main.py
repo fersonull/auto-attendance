@@ -5,7 +5,6 @@ import os
 def main():
     dotenv.load_dotenv()
 
-
     print("Starting Attendance Bot...")
 
     email = os.getenv("USER_EMAIL")

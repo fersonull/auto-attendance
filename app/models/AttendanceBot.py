@@ -37,13 +37,15 @@ class AttendanceBot:
         self.driver = webdriver.Chrome(options=options)
 
     def login(self):
-        self.tag("Logging in...")
+        self.tag(f"Logging in with your email: {self.email}")
         self.driver.get(f"{self.BASE_URL}/login-app")
 
         try:
             self.find_elem(By.ID, "email").send_keys(self.email)
             self.find_elem(By.ID, "password").send_keys(self.password)
-            self.find_elem(By.ID, "login-btn").click()
+            login_btn = self.find_elem(By.ID, "login-btn")
+
+            self.safe_click(login_btn)
 
             hasError = self.wait_to_load_elem(By.CLASS_NAME, "alert_danger", 10)
 
@@ -64,13 +66,32 @@ class AttendanceBot:
             return
 
         self.tag("Fetching subjects...")
-        subject_link = self.find_elem(By.XPATH, f"//a[@href='{self.BASE_URL}/my-subjects']")
+        go_to_subject_btn = self.find_elem(By.XPATH, f"//a[@href='{self.BASE_URL}/my-subjects']")
         
-        subject_link.click()
-        self.tag("Subjects found","success")
+        self.safe_click(go_to_subject_btn)
+
+        subjects = self.find_elems(By.XPATH, f"//a[contains(@href, '{self.BASE_URL}/view-subject-lessons/')]")
+
+        links = [href_link.get_attribute("href") for href_link in subjects]
+
+        if len(links) < 1:
+            self.tag("No subjects found", "error")
+            return
+
+        self.tag(f"{len(links)} subjects found!", "success")
+
+        print(links)
 
         sleep(5)
 
+
+    def find_elems(self, by, selector):
+        try:
+            elements = self.driver.find_elements(by, selector)
+            return elements
+        except (NoSuchElementException or TimeoutException):
+            self.tag(f"Element '{selector}' not found.", "error")
+            return None
 
     def find_elem(self, by, selector):
         try:
@@ -79,6 +100,14 @@ class AttendanceBot:
         except (NoSuchElementException or TimeoutException):
             self.tag(f"Element '{selector}' not found.", "error")
             return None
+
+    def safe_click(self, element):
+        try:
+            self.driver.execute_script("arguments[0].scrollIntoView();", element)
+            element.click()
+        except:
+            self.driver.execute_script("arguments[0].click();", element)
+
 
     def wait_to_load_elem(self, by, selector, seconds=10):
         try:
