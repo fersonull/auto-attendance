@@ -22,10 +22,18 @@ class AttendanceBot:
 
         self.email = email
         self.password = password
+
         options = Options()
-        # options.add_argument("--headless")
+
         options.add_argument("--disable-save-password-bubble")
+        options.add_argument("--headless=new")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--window-size=1920,1080")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--enable-javascript")
         options.add_experimental_option("prefs", prefs)
+
         self.driver = webdriver.Chrome(options=options)
 
     def login(self):
@@ -41,11 +49,12 @@ class AttendanceBot:
 
             if (hasError):
                 return False
+            
+            self.tag("You are now logged in!", "success")
+            return True
 
         except AttributeError:
             return False
-        
-        return True
 
     def start(self):
         sub_link_loaded = self.wait_to_load_elem(By.XPATH, f"//a[@href='{self.BASE_URL}/my-subjects']")
@@ -67,7 +76,7 @@ class AttendanceBot:
         try:
             element = self.driver.find_element(by, selector)
             return element
-        except NoSuchElementException:
+        except (NoSuchElementException or TimeoutException):
             self.tag(f"Element '{selector}' not found.", "error")
             return None
 
