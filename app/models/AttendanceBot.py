@@ -13,10 +13,19 @@ class AttendanceBot:
     BASE_URL = "https://pmftci.com/college"
 
     def __init__(self, email, password):
+
+        prefs = {
+            "credentials_enable_service": False,
+            "profile.password_manager_enabled": False,
+            "profile.password_manager_leak_detection": False
+        }
+
         self.email = email
         self.password = password
         options = Options()
         # options.add_argument("--headless")
+        options.add_argument("--disable-save-password-bubble")
+        options.add_experimental_option("prefs", prefs)
         self.driver = webdriver.Chrome(options=options)
 
     def login(self):

@@ -1,10 +1,15 @@
 from app.models.AttendanceBot import AttendanceBot
+import dotenv
+import os
 
 def main():
+    dotenv.load_dotenv()
+
+
     print("Starting Attendance Bot...")
 
-    email = "youremail@sample.bot"
-    password = "yourpassword"
+    email = os.getenv("USER_EMAIL")
+    password = os.getenv("USER_PASSWORD")
 
     bot = AttendanceBot(email, password)
 
