@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
+from app.services.SubjectServices import SubjectServices
 
 class AttendanceBot:
     BASE_URL = "https://pmftci.com/college"
@@ -35,6 +36,10 @@ class AttendanceBot:
         options.add_experimental_option("prefs", prefs)
 
         self.driver = webdriver.Chrome(options=options)
+
+        sub_serv = SubjectServices()
+
+        subjects = sub_serv.load_subjects()
 
     def login(self):
         self.tag(f"Logging in with your email: {self.email}")
@@ -81,6 +86,19 @@ class AttendanceBot:
         self.tag(f"{len(links)} subjects found!", "success")
 
         print(links)
+
+        subject_ids = [link.rstrip('/').split('/')[-1] for link in links]
+
+        print(subject_ids)
+
+        # [
+        #     'https://pmftci.com/college/view-subject-lessons/141458', IT4 IPT2
+        #     'https://pmftci.com/college/view-subject-lessons/141459', IT5 EDP
+        #     'https://pmftci.com/college/view-subject-lessons/141460', IT16 ADS
+        #     'https://pmftci.com/college/view-subject-lessons/141461', IT17 NET2
+        #     'https://pmftci.com/college/view-subject-lessons/141462', IT18 SIA 1
+        #     'https://pmftci.com/college/view-subject-lessons/141463' IT19 WST 1
+        # ]
 
         sleep(5)
 
