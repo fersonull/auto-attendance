@@ -37,9 +37,9 @@ class AttendanceBot:
 
         self.driver = webdriver.Chrome(options=options)
 
-        sub_serv = SubjectServices()
+        # sub_serv = SubjectServices()
 
-        subjects = sub_serv.load_subjects()
+        # subjects = sub_serv.load_subjects()
 
     def login(self):
         self.tag(f"Logging in with your email: {self.email}")
@@ -63,7 +63,7 @@ class AttendanceBot:
         except AttributeError:
             return False
 
-    def start(self):
+    def start(self, subject_id) :
         sub_link_loaded = self.wait_to_load_elem(By.XPATH, f"//a[@href='{self.BASE_URL}/my-subjects']")
 
         if not sub_link_loaded: 
@@ -85,22 +85,26 @@ class AttendanceBot:
 
         self.tag(f"{len(links)} subjects found!", "success")
 
-        print(links)
+        # print(links)
 
-        subject_ids = [link.rstrip('/').split('/')[-1] for link in links]
+        subject_ids = [int(link.rstrip('/').split('/')[-1]) for link in links]
 
-        print(subject_ids)
+        for id in subject_ids:
+            print(id)
+            if id == subject_id:
+                self.tag(f"found subject ID: {id}")
 
-        # [
-        #     'https://pmftci.com/college/view-subject-lessons/141458', IT4 IPT2
-        #     'https://pmftci.com/college/view-subject-lessons/141459', IT5 EDP
-        #     'https://pmftci.com/college/view-subject-lessons/141460', IT16 ADS
-        #     'https://pmftci.com/college/view-subject-lessons/141461', IT17 NET2
-        #     'https://pmftci.com/college/view-subject-lessons/141462', IT18 SIA 1
-        #     'https://pmftci.com/college/view-subject-lessons/141463' IT19 WST 1
-        # ]
+                scheduled_subject = self.find_elem(By.XPATH, f"//a[@href='{self.BASE_URL}/view-subject-lessons/{subject_id}']")
 
-        sleep(5)
+                self.safe_click(scheduled_subject)
+
+                self.tag("Scheduled subject loaded!", "success")
+                return
+        
+        self.tag(f"Subject ID: {subject_id} not found", "error")
+        return
+
+        # print(subject_ids)
 
 
     def find_elems(self, by, selector):
