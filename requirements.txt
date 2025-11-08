@@ -1,0 +1,3 @@
+selenium
+rich
+dotenv
