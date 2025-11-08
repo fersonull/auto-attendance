@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
-from app.services.SubjectServices import SubjectServices
+from app.services.DiscordWebhook import DiscordWebhook
 
 class AttendanceBot:
     BASE_URL = "https://pmftci.com/college"
@@ -37,12 +37,11 @@ class AttendanceBot:
 
         self.driver = webdriver.Chrome(options=options)
 
-        # sub_serv = SubjectServices()
-
-        # subjects = sub_serv.load_subjects()
+        self.hook = DiscordWebhook()
 
     def login(self):
-        self.tag(f"\ncLogging in with your email: {self.email}")
+        self.tag(f"Logging in with your email: {self.email}")
+        self.hook.send(f"Logging in with your email: {self.email}")
         self.driver.get(f"{self.BASE_URL}/login-app")
 
         try:
@@ -58,6 +57,7 @@ class AttendanceBot:
                 return False
             
             self.tag("You are now logged in!", "success")
+            self.hook.send("You are now logged in!")
             return True
 
         except AttributeError:
@@ -68,9 +68,11 @@ class AttendanceBot:
 
         if not sub_link_loaded: 
             self.tag("Failed to load subjects link.", "error")
+            self.hook.send("Failed to load subjects link.")
             return
 
         self.tag("Fetching subjects...")
+        self.hook.send("Fetching subjects...")
         go_to_subject_btn = self.find_elem(By.XPATH, f"//a[@href='{self.BASE_URL}/my-subjects']")
         
         self.safe_click(go_to_subject_btn)
@@ -81,9 +83,11 @@ class AttendanceBot:
 
         if len(links) < 1:
             self.tag("No subjects found", "error")
+            self.hook.send("No subjects found", "error")
             return
 
         self.tag(f"{len(links)} subjects found!", "success")
+        self.hook.send(f"{len(links)} subjects found!")
 
         # print(links)
 
@@ -92,12 +96,14 @@ class AttendanceBot:
         for id in subject_ids:
             if id == subject["subject_id"]:
                 self.tag(f"found subject: {subject["name"]}")
+                self.hook.send(f"found subject: {subject["name"]}")
 
                 scheduled_subject = self.find_elem(By.XPATH, f"//a[@href='{self.BASE_URL}/view-subject-lessons/{subject["subject_id"]}']")
 
                 self.safe_click(scheduled_subject)
 
                 self.tag(f"Subject {subject["name"]} loaded!", "success")
+                self.hook.send(f"Subject {subject["name"]} loaded!")
                 self.driver.quit()
                 return
         
