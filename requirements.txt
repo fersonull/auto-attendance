@@ -1,3 +1,4 @@
 selenium
 rich
 dotenv
+schedule

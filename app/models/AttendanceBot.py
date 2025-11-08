@@ -42,7 +42,7 @@ class AttendanceBot:
         # subjects = sub_serv.load_subjects()
 
     def login(self):
-        self.tag(f"Logging in with your email: {self.email}")
+        self.tag(f"\ncLogging in with your email: {self.email}")
         self.driver.get(f"{self.BASE_URL}/login-app")
 
         try:
@@ -63,7 +63,7 @@ class AttendanceBot:
         except AttributeError:
             return False
 
-    def start(self, subject_id) :
+    def start(self, subject):
         sub_link_loaded = self.wait_to_load_elem(By.XPATH, f"//a[@href='{self.BASE_URL}/my-subjects']")
 
         if not sub_link_loaded: 
@@ -90,18 +90,18 @@ class AttendanceBot:
         subject_ids = [int(link.rstrip('/').split('/')[-1]) for link in links]
 
         for id in subject_ids:
-            print(id)
-            if id == subject_id:
-                self.tag(f"found subject ID: {id}")
+            if id == subject["subject_id"]:
+                self.tag(f"found subject: {subject["name"]}")
 
-                scheduled_subject = self.find_elem(By.XPATH, f"//a[@href='{self.BASE_URL}/view-subject-lessons/{subject_id}']")
+                scheduled_subject = self.find_elem(By.XPATH, f"//a[@href='{self.BASE_URL}/view-subject-lessons/{subject["subject_id"]}']")
 
                 self.safe_click(scheduled_subject)
 
-                self.tag("Scheduled subject loaded!", "success")
+                self.tag(f"Subject {subject["name"]} loaded!", "success")
+                self.driver.quit()
                 return
         
-        self.tag(f"Subject ID: {subject_id} not found", "error")
+        self.tag(f"Subject ID: {subject["name"]} not found", "error")
         return
 
         # print(subject_ids)
