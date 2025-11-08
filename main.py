@@ -1,10 +1,15 @@
 from app.models.AttendanceBot import AttendanceBot
+from app.services.DiscordWebhook import DiscordWebhook
 import schedule
 import dotenv
 import os
 import time
 
+discord_hook = DiscordWebhook()
+
 def run_bot(subject):
+    discord_hook.send(f"It's {subject["name"]} time!")
+
     email = os.getenv("USER_EMAIL")
     password = os.getenv("USER_PASSWORD")
 
@@ -12,6 +17,7 @@ def run_bot(subject):
 
     if not bot.login():
         bot.tag("Invalied credentials", "error")
+        discord_hook.send("Failed to login: Invalid credentials")
         return
 
     bot.start(subject=subject)
@@ -20,6 +26,7 @@ def main():
     dotenv.load_dotenv()
 
     print("Attendance bot loaded! Waiting for scheduled subjects...")
+    discord_hook.send("Attendance Bot started! Waiting for scheduled subjects...")
 
     # [
     #     'https://pmftci.com/college/view-subject-lessons/141458', IT4 IPT2
@@ -31,8 +38,8 @@ def main():
     # ]  
 
     scheds = [
-        { "subject_id": 141463, "name": "WST1", "schedule": "02:04" },
-        { "subject_id": 141458, "name": "IPT2", "schedule": "02:05" }
+        { "subject_id": 141463, "name": "WST1", "schedule": "02:40" },
+        { "subject_id": 141458, "name": "IPT2", "schedule": "02:41" }
     ]
 
     for sched in scheds:
