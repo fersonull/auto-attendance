@@ -1,92 +1,54 @@
-# Auto Attendance Bot (Selenium)
-
-This project is a Python automation bot that logs into a website and performs actions automatically using Selenium. It is designed with Object-Oriented Programming (OOP) structure for maintainability and scalability.
+Here’s a clean, minimal **README.md** for your **Auto Attendance Bot** 👇
 
 ---
 
-## ✅ Features
+````markdown
+# 🧠 Auto Attendance Bot (PMFTCI LMS)
 
-* Automated login using Selenium WebDriver
-* Clean Python OOP architecture
-* Includes element wait handling
-* Support for console logging
-* Ready for future automation (e.g. attendance check)
+An automated attendance bot made specifically for **PMFTCI’s LMS**.  
+It automatically logs in and marks attendance for your subjects based on a defined schedule.
 
 ---
 
-## 🚀 Tech Stack
+## ⚙️ Setup Guide
 
-| Tool               | Purpose                   |
-| ------------------ | ------------------------- |
-| Python 3.10+       | Main programming language |
-| Selenium           | Web automation            |
-| WebDriver (Chrome) | Controls the browser      |
-
----
-
-## 📦 Installation
-
-### 1. Clone the Repository
-
+### 1️⃣ Clone the repository
 ```bash
-git clone https://github.com/your-username/auto-attendance.git
+git clone https://github.com/fersonull/auto-attendance.git
 cd auto-attendance
-```
+````
 
-### 2. Create Virtual Environment
+### 2️⃣ Create a virtual environment
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate  # Linux / macOS
-venv\Scripts\activate     # Windows
+python -m venv venv
+source venv/bin/activate     # On Linux/Mac
+venv\Scripts\activate        # On Windows
 ```
 
-### 3. Install Dependencies
+### 3️⃣ Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Download ChromeDriver
+### 4️⃣ Setup environment variables
 
-Download a ChromeDriver version compatible with your Chrome browser:
-[https://chromedriver.chromium.org/downloads](https://chromedriver.chromium.org/downloads)
+Copy the example file and edit it:
 
-Place it inside the project folder or add it to PATH.
-
----
-
-## 📁 Project Structure
-
-```
-auto-attendance/
-│
-├── app/
-│   ├── models/
-│   │   └── AttendanceBot.py
-│   ├── utils/
-│   │   └── __init__.py
-│   └── __init__.py
-│
-├── main.py
-├── requirements.txt
-└── README.md
+```bash
+cp .env.example .env
 ```
 
----
+Then open `.env` and replace the values with your own credentials:
 
-## ▶️ Usage
-
-Configure your credentials and run the bot:
-
-```python
-from app.models.AttendanceBot import AttendanceBot
-
-bot = AttendanceBot("your-email@example.com", "your-password")
-bot.login()
+```
+USER_EMAIL=your_lms_email
+USER_PASSWORD=your_lms_password
+WEBHOOK_URL=your_discord_webhook_url
 ```
 
-Run it:
+### 5️⃣ Run the bot
 
 ```bash
 python main.py
@@ -94,35 +56,34 @@ python main.py
 
 ---
 
-## 🛡️ Notes
+## 📅 Scheduling
 
-* Only use this script for **ethical and legal purposes**.
-* Do **not** use this on systems without permission.
-* Some websites detect bot behavior—use responsibly.
+The bot automatically runs according to the schedule defined in the code:
 
----
+```python
+scheds = [
+    { "subject_id": 141463, "name": "WST 1", "schedule": "08:00" },
+    { "subject_id": 141458, "name": "IPT 2", "schedule": "09:30" },
+]
+```
 
-## 🛠️ Future Improvements
-
-* Auto attendance execution
-* Headless mode support
-* User configuration via `.env`
-* Logging system improvements using `rich`
+Each schedule runs daily at the specified time.
 
 ---
 
-## 🤝 Contributing
+## 🧩 Features
 
-Pull requests are welcome! For major changes, open an issue first to discuss.
-
----
-
-## 📜 License
-
-This project is open-source. You may modify and use it under terms defined by the owner.
+* Auto login to PMFTCI LMS
+* Marks attendance automatically
+* Customizable daily schedule
+* Discord webhook notifications
+* Simple and lightweight setup
 
 ---
 
-### ✉️ Contact
+## ⚠️ Disclaimer
 
-For help or suggestions, feel free to reach out.
+This tool is for **educational and personal automation use only**.
+Use responsibly — do not misuse it for cheating or violating LMS terms.
+
+---
